@@ -1,0 +1,38 @@
+# Docker ignore file for Java web application
+.git
+.gitignore
+README.md
+Dockerfile*
+docker-compose.yml
+
+# Build directories
+build/
+target/
+dist/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# NetBeans specific
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/

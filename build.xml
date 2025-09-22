@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ch12_ex1_sqlGateway" default="war" basedir=".">
+    <description>Builds, tests, and runs the project ch12_ex1_sqlGateway.</description>
+    
+    <!-- Define properties -->
+    <property name="src.dir" value="src/java"/>
+    <property name="web.dir" value="web"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="tomcat.home" value="D:\Code\Năm 3\ltw\apache-tomcat-9.0.108"/>
+    <property name="war.name" value="ch12_ex1_sqlGateway.war"/>
+    <property name="deploy.dir" value="${tomcat.home}/webapps"/>
+    
+    <!-- Define classpath -->
+    <path id="classpath">
+        <fileset dir="${tomcat.home}/lib" includes="*.jar"/>
+        <fileset dir="${lib.dir}" includes="*.jar" erroronmissingdir="false"/>
+        <fileset dir="${web.dir}/WEB-INF/lib" includes="*.jar" erroronmissingdir="false"/>
+    </path>
+    
+    <!-- Clean task -->
+    <target name="clean" description="Clean build directory">
+        <delete dir="${build.dir}"/>
+    </target>
+    
+    <!-- Init task -->
+    <target name="init" description="Create build directory">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.dir}/classes"/>
+        <mkdir dir="${build.dir}/war"/>
+    </target>
+    
+    <!-- Compile task -->
+    <target name="compile" depends="init" description="Compile Java sources">
+        <javac srcdir="${src.dir}" 
+               destdir="${build.dir}/classes"
+               classpathref="classpath"
+               includeantruntime="false"
+               debug="true"/>
+    </target>
+    
+    <!-- War task -->
+    <target name="war" depends="compile" description="Create WAR file">
+        <!-- Copy web resources -->
+        <copy todir="${build.dir}/war">
+            <fileset dir="${web.dir}"/>
+        </copy>
+        
+        <!-- Copy compiled classes -->
+        <copy todir="${build.dir}/war/WEB-INF/classes">
+            <fileset dir="${build.dir}/classes"/>
+        </copy>
+        
+        <!-- Create lib directory and copy JAR files if they exist -->
+        <mkdir dir="${build.dir}/war/WEB-INF/lib"/>
+        <copy todir="${build.dir}/war/WEB-INF/lib" failonerror="false">
+            <fileset dir="${lib.dir}" includes="*.jar" erroronmissingdir="false"/>
+        </copy>
+        
+        <!-- Copy existing JAR files from web/WEB-INF/lib -->
+        <copy todir="${build.dir}/war/WEB-INF/lib" failonerror="false">
+            <fileset dir="${web.dir}/WEB-INF/lib" includes="*.jar" erroronmissingdir="false"/>
+        </copy>
+        
+        <!-- Create WAR file -->
+        <jar destfile="${build.dir}/${war.name}" 
+             basedir="${build.dir}/war"/>
+    </target>
+    
+    <!-- Deploy task -->
+    <target name="deploy" depends="war" description="Deploy WAR to Tomcat">
+        <copy file="${build.dir}/${war.name}" todir="${deploy.dir}"/>
+    </target>
+    
+    <!-- Undeploy task -->
+    <target name="undeploy" description="Remove WAR from Tomcat">
+        <delete file="${deploy.dir}/${war.name}"/>
+        <delete dir="${deploy.dir}/ch12_ex1_sqlGateway"/>
+    </target>
+    
+    <!-- Redeploy task -->
+    <target name="redeploy" depends="undeploy,deploy" description="Redeploy application"/>
+    
+</project>
