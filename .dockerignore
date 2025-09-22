@@ -1,12 +1,11 @@
 # Docker ignore file for Java web application
 .git
 .gitignore
-README.md
 Dockerfile*
 docker-compose.yml
 
-# Build directories
-build/
+# Build directories - Don't ignore build/ as we might need it
+# build/
 target/
 dist/
 
